@@ -72,15 +72,15 @@ install_package(){
 
 install_snap_package(){
     if [ ! `command -v ${2:-$1}` ]; then
-        fecho "Installing $1..."
+        fecho "Installing ${2:-$1}..."
         sudo snap install $1
         if [ $? -eq 0 ]; then
-            fecho "$1 has been succesfully installed!" $GREEN
+            fecho "${2:-$1} has been succesfully installed!" $GREEN
         else
-            fecho "$1 couldn't be installed!" $RED
+            fecho "${2:-$1} couldn't be installed!" $RED
         fi
     else
-        echo "`fecho $1 $RED` already installed!"
+        echo "`fecho ${2:-$1} $RED` already installed!"
     fi
 }
 
@@ -177,17 +177,21 @@ echo "-------------"
 
 install_package "git"
 
-read -n1 -p "Do you want to set git global account's identity? `fecho [y/n]:` " prompt
-echo -ne "\n"
+if [ ! -f ~/.gitconfig ] || [ $(grep email ~/.gitconfig  -c) -eq 0 ] || [ $(grep name ~/.gitconfig  -c) -eq 0 ]; then
+    read -n1 -p "Do you want to set git global account's identity? `fecho [y/n]:` " prompt
+    echo -ne "\n"
 
-case $prompt in
-    y|Y) read -p "`fecho "user.email: "`" email
-        read -p "`fecho "user.name: "`" name
-        git config --global user.email "$email"
-        git config --global user.name "$name"
-        fecho "Git account's identity set!" $GREEN;;
-    *) fecho "Git account's identity setting aborted!" $RED;;
-esac
+    case $prompt in
+        y|Y) read -p "`fecho "user.email: "`" email
+            read -p "`fecho "user.name: "`" name
+            git config --global user.email "$email"
+            git config --global user.name "$name"
+            fecho "Git account's identity set!" $GREEN;;
+        *) fecho "Git account's identity setting aborted!" $RED;;
+    esac
+else
+	echo `fecho "Git account's identity" $RED` "already set up!"
+fi
 
 echo "--------------------------"
 fecho 'zsh'
@@ -211,26 +215,53 @@ echo "--------------------------"
 fecho "Oh my ZSH!"
 echo "-------------"
 
-read -n1 -p "Do you want to install Oh my ZSH? `fecho [y/n]:` " prompt
-echo -ne "\n"
+if [ ! -d ~/.oh-my-zsh ]; then
+	read -n1 -p "Do you want to install Oh my ZSH? `fecho [y/n]:` " prompt
+	echo -ne "\n"
 
-case $prompt in
-    y|Y) fecho "Installing Oh my ZSH!..." $GREEN
-    if [ ! -d ~/.oh-my-zsh ]; then
-        sh -c "$(wget -O- -q https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended &> /dev/null
-        echo `fecho "Oh my ZSH" $GREEN` "has been installed!"
+	case $prompt in
+	    y|Y) fecho "Installing Oh my ZSH!..." $GREEN
+	    if [ ! -d ~/.oh-my-zsh ]; then
+	        sh -c "$(wget -O- -q https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended &> /dev/null
+	        echo `fecho "Oh my ZSH" $GREEN` "has been installed!"
 
-        #Fetch and install all plugins defined in 'PLUGINS' array
-        fetch_plugins
-        #Setup all aliases defined in 'ALIASES' array
-        setup_aliases
+	        #Fetch and install all plugins defined in 'PLUGINS' array
+	        fetch_plugins
+	        #Setup all aliases defined in 'ALIASES' array
+	        setup_aliases
 
-        echo `fecho "Oh my ZSH" $GREEN` "has been configured succesfully!"
-    else
-        echo `fecho "Oh my ZSH" $RED` "already installed!"
-    fi;;
-    *) fecho "Oh my ZSH! installation aborted!" $RED;;
-esac
+	        echo `fecho "Oh my ZSH" $GREEN` "has been configured succesfully!"
+	    fi;;
+	    *) fecho "Oh my ZSH! installation aborted!" $RED;;
+	esac
+else
+	echo `fecho "Oh my ZSH" $RED` "already installed!"
+fi
+
+echo "--------------------------"
+fecho "FiraCode font"
+echo "-------------"
+
+if [ $(ls /usr/share/fonts | grep FiraCode -c) -eq 0 ]; then
+    read -n1 -p "Do you want to install FiraCode font? `fecho [y/n]:` " prompt
+    echo -ne "\n"
+
+    case $prompt in
+        y|Y) fecho "Installing FiraCode font..." $GREEN
+            wget -q "https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip" -O "font.zip"
+            unzip "font.zip" -d "font" &> /dev/null
+            sudo cp font/ttf/* /usr/share/fonts
+            if [ $? -eq 0 ]; then
+                echo "`fecho FiraCode $GREEN` installed successfully"
+            else
+                echo "Couldn't install `fecho FiraCode $RED`"
+            fi
+            rm -rf font*;;
+        *) fecho "Font installation aborted!" $RED;;
+    esac
+else
+	echo `fecho "FiraCode" $RED` "already installed!"
+fi
 
 echo "--------------------------"
 fecho 'snap apps'
@@ -241,9 +272,9 @@ echo -ne "\n"
 
 case $prompt in
     y|Y) fecho "Installing snap apps..." $GREEN
-        install_snap_package "vscode-insiders" "code-insiders"
+        install_snap_package "code-insiders --classic" "code-insiders"
         install_snap_package "spotify"
-        install_snap_package "slack"
+        install_snap_package "slack --classic" "slack"
         install_snap_package "postman";;
     *) fecho "Snap installation aborted!" $RED;;
 esac
@@ -252,12 +283,15 @@ echo "--------------------------"
 fecho 'GitHub CLI, ssh-key'
 echo "-------------"
 
-read -n1 -p "Do you want to authenticate with GitHub? `fecho [y/n]:` " prompt
-echo -ne "\n"
+if [ ! -f ~/.ssh/known_hosts ]; then
+    read -n1 -p "Do you want to authenticate with GitHub? `fecho [y/n]:` " prompt
+    echo -ne "\n"
 
-case $prompt in
-    y|Y) fecho "Authenticating with GitHub..." $GREEN
-    authenticate_github;;
-    *) fecho "GitHub authentication aborted!" $RED;;
-esac
-
+    case $prompt in
+        y|Y) fecho "Authenticating with GitHub..." $GREEN
+        authenticate_github;;
+        *) fecho "GitHub authentication aborted!" $RED;;
+    esac
+else
+	echo "Already authenticated with `fecho "GitHub" $RED`!"
+fi
