@@ -67,7 +67,7 @@ install_package(){
             fecho "$1 couldn't be installed!" $RED
         fi
     else
-        echo `fecho $1 $RED` "already installed!"
+        echo `fecho $1 $GREEN` "already installed!"
     fi
 }
 
@@ -81,7 +81,7 @@ install_snap_package(){
             fecho "${2:-$1} couldn't be installed!" $RED
         fi
     else
-        echo "`fecho ${2:-$1} $RED` already installed!"
+        echo "`fecho ${2:-$1} $GREEN` already installed!"
     fi
 }
 
@@ -169,7 +169,7 @@ if [ $(sudo grep "^$SUDOERS_ENTRY$" -c /etc/sudoers) -eq 0 ]; then
     echo $SUDOERS_ENTRY | sudo EDITOR="tee -a" visudo &> /dev/null
     echo `fecho $USER $GREEN` "entry added to sudoers!"
 else
-    echo `fecho /etc/sudoers $RED` "entry already exists!"
+    echo `fecho /etc/sudoers $GREEN` "entry already exists!"
 fi
 
 echo "--------------------------"
@@ -191,7 +191,7 @@ if [ ! -f ~/.gitconfig ] || [ $(grep email ~/.gitconfig  -c) -eq 0 ] || [ $(grep
         *) fecho "Git account's identity setting aborted!" $RED;;
     esac
 else
-	echo `fecho "Git account's identity" $RED` "already set up!"
+	echo `fecho "Git account's identity" $GREEN` "already set up!"
 fi
 
 echo "--------------------------"
@@ -209,7 +209,7 @@ if [ $(echo $SHELL | grep "zsh" -c) -eq 0 ]; then
         echo "Couldn't change default shell to" `fecho "ZSH!" $RED`
     fi
 else
-    echo `fecho "zsh" $RED` "is already your default shell!"
+    echo `fecho "zsh" $GREEN` "is already your default shell!"
 fi
 
 echo "--------------------------"
@@ -236,7 +236,7 @@ if [ ! -d ~/.oh-my-zsh ]; then
 	    *) fecho "Oh my ZSH! installation aborted!" $RED;;
 	esac
 else
-	echo `fecho "Oh my ZSH" $RED` "already installed!"
+	echo `fecho "Oh my ZSH" $GREEN` "already installed!"
 fi
 
 echo "--------------------------"
@@ -261,7 +261,7 @@ if [ $(ls /usr/share/fonts | grep FiraCode -c) -eq 0 ]; then
         *) fecho "Font installation aborted!" $RED;;
     esac
 else
-	echo `fecho "FiraCode" $RED` "already installed!"
+	echo `fecho "FiraCode" $GREEN` "already installed!"
 fi
 
 echo "--------------------------"
@@ -289,7 +289,7 @@ if [ $uninstalled_snaps_count -gt 0 ]; then
 	    *) fecho "Snap installation aborted!" $RED;;
 	esac
 else
-	echo  `fecho "Snap apps" $RED` already installed
+	echo  `fecho "Snap apps" $GREEN` already installed
 fi
 
 
@@ -307,5 +307,5 @@ if [ ! -f ~/.ssh/known_hosts ]; then
         *) fecho "GitHub authentication aborted!" $RED;;
     esac
 else
-	echo "Already authenticated with `fecho "GitHub" $RED`!"
+	echo "Already authenticated with `fecho "GitHub" $GREEN`!"
 fi
