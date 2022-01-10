@@ -7,6 +7,7 @@
 PLUGINS=("https://github.com/lukechilds/zsh-nvm.git" "https://github.com/zsh-users/zsh-syntax-highlighting.git" "https://github.com/zsh-users/zsh-autosuggestions.git")
 THEME="https://github.com/romkatv/powerlevel10k.git"
 ALIASES=("code='code-insiders'" "zshrc='nano ~/.zshrc'")
+SNAPS=("code-insiders" "spotify" "slack" "postman" "gitkraken")
 
 ###########################################
 ##### FORMATTING CONSTANTS
@@ -73,7 +74,7 @@ install_package(){
 install_snap_package(){
     if [ ! `command -v ${2:-$1}` ]; then
         fecho "Installing ${2:-$1}..."
-        sudo snap install $1
+        sudo snap install $1 --classic
         if [ $? -eq 0 ]; then
             fecho "${2:-$1} has been succesfully installed!" $GREEN
         else
@@ -267,17 +268,30 @@ echo "--------------------------"
 fecho 'snap apps'
 echo "-------------"
 
-read -n1 -p "Do you want to install snap apps? `fecho [y/n]:` " prompt
-echo -ne "\n"
+uninstalled_snaps_count=0
+snaps_to_install=()
+for ((i < 0; i < ${#SNAPS[@]}; i++)); do
+	if [ ! `command -v ${SNAPS[$i]}` ]; then
+		((uninstalled_snaps_count++))
+		snaps_to_install+=(${SNAPS[$i]})
+	fi
+done
 
-case $prompt in
-    y|Y) fecho "Installing snap apps..." $GREEN
-        install_snap_package "code-insiders --classic" "code-insiders"
-        install_snap_package "spotify"
-        install_snap_package "slack --classic" "slack"
-        install_snap_package "postman";;
-    *) fecho "Snap installation aborted!" $RED;;
-esac
+if [ $uninstalled_snaps_count -gt 0 ]; then
+	read -n1 -p "Do you want to install snap apps? `fecho [y/n]:` " prompt
+	echo -ne "\n"
+
+	case $prompt in
+	    y|Y) fecho "Installing snap apps..." $GREEN
+		for ((j < 0; j < ${#snaps_to_install[@]}; j++)); do
+			install_snap_package ${snaps_to_install[$j]}
+		done;;
+	    *) fecho "Snap installation aborted!" $RED;;
+	esac
+else
+	echo  `fecho "Snap apps" $RED` already installed
+fi
+
 
 echo "--------------------------"
 fecho 'GitHub CLI, ssh-key'
