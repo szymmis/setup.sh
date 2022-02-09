@@ -232,6 +232,20 @@ if [ ! -d ~/.oh-my-zsh ]; then
 	        setup_aliases
 
 	        echo `fecho "Oh my ZSH" $GREEN` "has been configured succesfully!"
+
+            echo "--------------------------"
+            fecho "node.js and yarn"
+            echo "-------------"
+
+            zsh -i -c "nvm install --lts && npm install --global yarn && yarn -v"
+
+            if [ $? -eq 0 ]; then
+                fecho "node.js and yarn has been succesfully configured!" $GREEN
+                sed -r -i 's/# (export PATH=\$HOME)/\1\/.yarn/g' ~/.zshrc
+            else
+                fecho "node.js and yarn couldn't be configured!" $RED
+            fi
+
 	    fi;;
 	    *) fecho "Oh my ZSH! installation aborted!" $RED;;
 	esac
