@@ -7,7 +7,7 @@
 PLUGINS=("https://github.com/lukechilds/zsh-nvm.git" "https://github.com/zsh-users/zsh-syntax-highlighting.git" "https://github.com/zsh-users/zsh-autosuggestions.git")
 THEME="https://github.com/romkatv/powerlevel10k.git"
 ALIASES=("code='code-insiders'" "zshrc='nano ~/.zshrc'")
-SNAPS=("code-insiders" "spotify" "slack" "postman" "gitkraken")
+SNAPS=("code-insiders" "spotify" "slack" "postman")
 
 ###########################################
 ##### FORMATTING CONSTANTS
