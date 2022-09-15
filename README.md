@@ -22,7 +22,7 @@ Basic bash script for workspace setup. It installs basic packages such as `git` 
 
 ## Installation
 ```bash
-bash -c "$(wget -O- https://szymmis.github.io/setup/setup.sh)" 
+bash -c "$(wget -O- https://szymmis.github.io/setup.sh/setup.sh)" 
 ```
 
 ## Configuration
