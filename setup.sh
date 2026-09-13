@@ -4,7 +4,7 @@
 ##### OHMYZSH CONFIGURATION CONSTANTS
 ###########################################
 
-PLUGINS=("https://github.com/lukechilds/zsh-nvm.git" "https://github.com/zsh-users/zsh-syntax-highlighting.git" "https://github.com/zsh-users/zsh-autosuggestions.git")
+PLUGINS=("https://github.com/lukechilds/zsh-nvm.git" "https://github.com/zsh-users/zsh-syntax-highlighting.git" "https://github.com/zsh-users/zsh-autosuggestions.git" "https://github.com/joshskidmore/zsh-fzf-history-search")
 THEME="https://github.com/romkatv/powerlevel10k.git"
 ALIASES=("code='code-insiders'" "zshrc='nano ~/.zshrc'")
 SNAPS=("code-insiders" "spotify" "slack" "postman")
